@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="description" content="Crocs Store KPI Dashboard - Track daily sales performance, traffic, and key business metrics">
+    <title>Crocs Store — KPI Board</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="dashboard">
+        <!-- Header -->
+        <header class="dash-header">
+            <div class="header-left">
+                <div class="logo">
+                    <span class="logo-icon">🐊</span>
+                    <div class="logo-text">
+                        <h1>Crocs Store</h1>
+                        <p class="subtitle">KPI Performance Board</p>
+                    </div>
+                </div>
+            </div>
+            <div class="header-right">
+                <div class="date-badge" id="current-date"></div>
+                <button class="header-btn" id="btn-targets" title="Set Targets">
+                    ⚙️ Targets
+                </button>
+            </div>
+        </header>
+
+        <!-- Tab Switcher -->
+        <nav class="tab-bar">
+            <button class="tab active" data-tab="mtd" id="tab-mtd">
+                <span class="tab-label">MTD</span>
+                <span class="tab-sub">Month to Date</span>
+            </button>
+            <button class="tab" data-tab="ytd" id="tab-ytd">
+                <span class="tab-label">YTD</span>
+                <span class="tab-sub">Year to Date</span>
+            </button>
+            <div class="tab-indicator" id="tab-indicator"></div>
+        </nav>
+
+        <!-- KPI Grid -->
+        <section class="kpi-section" id="kpi-section">
+            <div class="kpi-grid" id="kpi-grid">
+                <!-- KPI Cards rendered by JS -->
+            </div>
+        </section>
+
+        <!-- Chart Section -->
+        <section class="chart-section">
+            <div class="chart-container glass-card">
+                <h3 class="chart-title">This Year vs Last Year — Sales Comparison</h3>
+                <div class="chart-wrapper">
+                    <canvas id="comparison-chart"></canvas>
+                </div>
+            </div>
+        </section>
+
+        <!-- Daily Log Table -->
+        <section class="log-section">
+            <div class="log-container glass-card">
+                <div class="log-header">
+                    <h3 class="log-title">📋 Daily Entries Log</h3>
+                    <span class="log-count" id="log-count">0 days</span>
+                </div>
+                <div class="log-table-wrap" id="log-table-wrap">
+                    <table class="log-table" id="log-table">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Sales TY</th>
+                                <th>Sales LY</th>
+                                <th>Invoices</th>
+                                <th>Traffic</th>
+                                <th>Jibbitz</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="log-tbody">
+                            <!-- Rows rendered by JS -->
+                        </tbody>
+                    </table>
+                    <div class="log-empty" id="log-empty">
+                        <p>No daily data entered yet.<br>Tap the <strong>+ button</strong> to add your first day.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="dash-footer">
+            <p>Crocs Store KPI Board &copy; 2026 — Data saved locally on this device</p>
+        </footer>
+    </div>
+
+    <!-- FAB: Add Daily Data -->
+    <button class="fab" id="fab-add" title="Add Daily Data">
+        <span class="fab-icon">+</span>
+    </button>
+
+    <!-- Overlay -->
+    <div class="overlay" id="overlay"></div>
+
+    <!-- Daily Entry Panel -->
+    <div class="entry-panel" id="entry-panel">
+        <div class="panel-header">
+            <h3 id="panel-title">Add Daily Data</h3>
+            <button class="panel-close" id="panel-close">✕</button>
+        </div>
+        <form id="entry-form" class="panel-form">
+            <div class="form-group">
+                <label for="entry-date">📅 Date</label>
+                <input type="date" id="entry-date" required>
+            </div>
+
+            <div class="form-divider">This Year</div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="entry-salesTY">💰 Sales (TY)</label>
+                    <input type="number" id="entry-salesTY" placeholder="0" step="any" required>
+                </div>
+                <div class="form-group">
+                    <label for="entry-invoicesTY">🧾 Invoices (TY)</label>
+                    <input type="number" id="entry-invoicesTY" placeholder="0" required>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="entry-unitsTY">👟 Units (TY)</label>
+                    <input type="number" id="entry-unitsTY" placeholder="0" required>
+                </div>
+                <div class="form-group">
+                    <label for="entry-trafficTY">🚶 Traffic (TY)</label>
+                    <input type="number" id="entry-trafficTY" placeholder="0" required>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="entry-jibbitzTY">⭐ Jibbitz Sales (TY)</label>
+                    <input type="number" id="entry-jibbitzTY" placeholder="0" step="any" required>
+                </div>
+            </div>
+
+            <div class="form-divider">Last Year (Same Day)</div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="entry-salesLY">💰 Sales (LY)</label>
+                    <input type="number" id="entry-salesLY" placeholder="0" step="any" required>
+                </div>
+                <div class="form-group">
+                    <label for="entry-invoicesLY">🧾 Invoices (LY)</label>
+                    <input type="number" id="entry-invoicesLY" placeholder="0" required>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="entry-unitsLY">👟 Units (LY)</label>
+                    <input type="number" id="entry-unitsLY" placeholder="0" required>
+                </div>
+                <div class="form-group">
+                    <label for="entry-trafficLY">🚶 Traffic (LY)</label>
+                    <input type="number" id="entry-trafficLY" placeholder="0" required>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="entry-jibbitzLY">⭐ Jibbitz Sales (LY)</label>
+                    <input type="number" id="entry-jibbitzLY" placeholder="0" step="any" required>
+                </div>
+            </div>
+
+            <button type="submit" class="btn-save" id="btn-save-entry">
+                💾 Save Entry
+            </button>
+        </form>
+    </div>
+
+    <!-- Targets Modal -->
+    <div class="modal" id="targets-modal">
+        <div class="modal-content glass-card">
+            <div class="modal-header">
+                <h3>⚙️ Set Targets</h3>
+                <button class="panel-close" id="modal-close">✕</button>
+            </div>
+            <form id="targets-form" class="panel-form">
+                <div class="form-group">
+                    <label for="target-monthly">🎯 Monthly Target (AED)</label>
+                    <input type="number" id="target-monthly" placeholder="185000" step="any" required>
+                </div>
+                <div class="form-group">
+                    <label for="target-yearly">🎯 Yearly Target (AED)</label>
+                    <input type="number" id="target-yearly" placeholder="1650000" step="any" required>
+                </div>
+                <button type="submit" class="btn-save">💾 Save Targets</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-database-compat.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+    <script src="main.js"></script>
+</body>
+</html>
