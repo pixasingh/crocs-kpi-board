@@ -6,6 +6,40 @@
 document.addEventListener('DOMContentLoaded', () => {
 
     // ═══════════════════════════════════════
+    // PASSWORD GATE
+    // ═══════════════════════════════════════
+    const APP_PASSWORD = '1234';
+    const lockScreen = document.getElementById('lock-screen');
+    const dashboard = document.getElementById('dashboard');
+    const lockForm = document.getElementById('lock-form');
+    const lockError = document.getElementById('lock-error');
+    const lockInput = document.getElementById('lock-password');
+
+    // Check if already authenticated this session
+    if (sessionStorage.getItem('crocs_auth') === 'true') {
+        lockScreen.style.display = 'none';
+        dashboard.style.display = '';
+    } else {
+        lockScreen.style.display = '';
+        dashboard.style.display = 'none';
+    }
+
+    lockForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        if (lockInput.value === APP_PASSWORD) {
+            sessionStorage.setItem('crocs_auth', 'true');
+            lockScreen.classList.add('hidden');
+            dashboard.style.display = '';
+            setTimeout(() => { lockScreen.style.display = 'none'; }, 500);
+        } else {
+            lockError.textContent = '❌ Wrong password. Try again.';
+            lockInput.value = '';
+            lockInput.classList.add('shake');
+            setTimeout(() => lockInput.classList.remove('shake'), 500);
+        }
+    });
+
+    // ═══════════════════════════════════════
     // FIREBASE SETUP
     // ═══════════════════════════════════════
     const firebaseConfig = {

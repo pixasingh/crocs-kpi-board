@@ -9,7 +9,21 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="dashboard">
+    <!-- Password Gate -->
+    <div id="lock-screen" class="lock-screen">
+        <div class="lock-card glass-card">
+            <div class="lock-logo">🐊</div>
+            <h2>Crocs Store</h2>
+            <p>Enter password to access KPI Board</p>
+            <form id="lock-form">
+                <input type="password" id="lock-password" placeholder="Enter password" autocomplete="off" required>
+                <button type="submit" class="btn-save">🔓 Unlock</button>
+            </form>
+            <p id="lock-error" class="lock-error"></p>
+        </div>
+    </div>
+
+    <div class="dashboard" id="dashboard" style="display:none;">
         <!-- Header -->
         <header class="dash-header">
             <div class="header-left">
