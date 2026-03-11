@@ -164,7 +164,9 @@ document.addEventListener('DOMContentLoaded', () => {
     function fmtNum(n) { return Number(n || 0).toLocaleString('en-US'); }
 
     function fmtDateShort(dateStr) {
+        if (!dateStr || !/^\d{4}-\d{2}-\d{2}$/.test(dateStr)) return dateStr || '—';
         const d = new Date(dateStr + 'T00:00:00');
+        if (isNaN(d.getTime())) return dateStr;
         return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
     }
 
