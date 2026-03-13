@@ -76,8 +76,14 @@
         <td class="header" colspan="4">🎯 From "Tgt Vs Achievement" Report</td>
     </tr>
     <tr>
-        <td class="input-label">Month/Year Target</td>
+        <td class="input-label">Month Target (for MTD)</td>
         <td class="input-cell fmt-whole" x:num="">1053831</td>
+        <td style="background:#eee;"></td>
+        <td class="formula-col">Tgt Vs Achievement</td>
+    </tr>
+    <tr>
+        <td class="input-label">Year Target (for YTD)</td>
+        <td style="background:#eee;"></td>
         <td class="input-cell fmt-whole" x:num="">7277796</td>
         <td class="formula-col">Tgt Vs Achievement</td>
     </tr>
