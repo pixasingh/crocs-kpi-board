@@ -14,6 +14,8 @@
     .formula-col { background: #F3E5F5; font-size: 10pt; color: #555; }
     .title { font-size: 16pt; font-weight: bold; color: #1A8917; border: none; }
     .subtitle { font-size: 10pt; color: #666; border: none; }
+    .fmt-decimal { mso-number-format:"0.0"; }
+    .fmt-whole { mso-number-format:"0"; }
 </style>
 </head>
 <body>
@@ -36,38 +38,38 @@
     </tr>
     <tr>
         <td class="input-label">Sales CY</td>
-        <td class="input-cell" x:num="">204355</td>
-        <td class="input-cell" x:num="">1604830</td>
+        <td class="input-cell fmt-whole" x:num="">204355</td>
+        <td class="input-cell fmt-whole" x:num="">1604830</td>
         <td class="formula-col">Month LFL</td>
     </tr>
     <tr>
         <td class="input-label">Sales LY</td>
-        <td class="input-cell" x:num="">278473</td>
-        <td class="input-cell" x:num="">1810330</td>
+        <td class="input-cell fmt-whole" x:num="">278473</td>
+        <td class="input-cell fmt-whole" x:num="">1810330</td>
         <td class="formula-col">Month LFL</td>
     </tr>
     <tr>
         <td class="input-label">Invoice CY</td>
-        <td class="input-cell" x:num="">918</td>
-        <td class="input-cell" x:num="">989</td>
+        <td class="input-cell fmt-whole" x:num="">918</td>
+        <td class="input-cell fmt-whole" x:num="">989</td>
         <td class="formula-col">Month LFL</td>
     </tr>
     <tr>
         <td class="input-label">Qty CY</td>
-        <td class="input-cell" x:num="">2900</td>
-        <td class="input-cell" x:num="">3558</td>
+        <td class="input-cell fmt-whole" x:num="">2900</td>
+        <td class="input-cell fmt-whole" x:num="">3558</td>
         <td class="formula-col">Month LFL</td>
     </tr>
     <tr>
         <td class="input-label">Footfall CY</td>
-        <td class="input-cell" x:num="">6374</td>
-        <td class="input-cell" x:num="">7452</td>
+        <td class="input-cell fmt-whole" x:num="">6374</td>
+        <td class="input-cell fmt-whole" x:num="">7452</td>
         <td class="formula-col">Month LFL</td>
     </tr>
     <tr>
         <td class="input-label">Jibbitz Sales Value CY</td>
-        <td class="input-cell" x:num="">36464</td>
-        <td class="input-cell" x:num="">304917</td>
+        <td class="input-cell fmt-whole" x:num="">36464</td>
+        <td class="input-cell fmt-whole" x:num="">304917</td>
         <td class="formula-col">Month LFL</td>
     </tr>
     <tr>
@@ -75,14 +77,14 @@
     </tr>
     <tr>
         <td class="input-label">Month/Year Target</td>
-        <td class="input-cell" x:num="">1053831</td>
-        <td class="input-cell" x:num="">7277796</td>
+        <td class="input-cell fmt-whole" x:num="">1053831</td>
+        <td class="input-cell fmt-whole" x:num="">7277796</td>
         <td class="formula-col">Tgt Vs Achievement</td>
     </tr>
     <tr>
         <td class="input-label">Current Days</td>
-        <td class="input-cell" x:num="">12</td>
-        <td class="input-cell" x:num="">64</td>
+        <td class="input-cell fmt-whole" x:num="">12</td>
+        <td class="input-cell fmt-whole" x:num="">64</td>
         <td class="formula-col">Tgt Vs Achievement</td>
     </tr>
     <tr><td colspan="4" style="border:none;">&nbsp;</td></tr>
@@ -94,74 +96,74 @@
     </tr>
     <tr>
         <td class="result-label">TARGET</td>
-        <td class="result-cell" x:fmla="=B13">1053831</td>
-        <td class="result-cell" x:fmla="=C13">7277796</td>
+        <td class="result-cell fmt-whole" x:fmla="=B13">1053831</td>
+        <td class="result-cell fmt-whole" x:fmla="=C13">7277796</td>
         <td class="formula-col">Direct Copy</td>
     </tr>
     <tr>
         <td class="result-label">TY SALES</td>
-        <td class="result-cell" x:fmla="=B6">204355</td>
-        <td class="result-cell" x:fmla="=C6">1604830</td>
+        <td class="result-cell fmt-whole" x:fmla="=B6">204355</td>
+        <td class="result-cell fmt-whole" x:fmla="=C6">1604830</td>
         <td class="formula-col">Direct Copy</td>
     </tr>
     <tr>
         <td class="result-label">LY SALES</td>
-        <td class="result-cell" x:fmla="=B7">278473</td>
-        <td class="result-cell" x:fmla="=C7">1810330</td>
+        <td class="result-cell fmt-whole" x:fmla="=B7">278473</td>
+        <td class="result-cell fmt-whole" x:fmla="=C7">1810330</td>
         <td class="formula-col">Direct Copy</td>
     </tr>
     <tr>
         <td class="result-label">% GROWTH (calc)</td>
-        <td class="result-cell" x:fmla="=IF(B7>0,ROUND(((B6-B7)/B7)*100,1),0)">-26.6</td>
-        <td class="result-cell" x:fmla="=IF(C7>0,ROUND(((C6-C7)/C7)*100,1),0)">-11.4</td>
+        <td class="result-cell fmt-decimal" x:fmla="=IF(B7>0,((B6-B7)/B7)*100,0)">-26.6</td>
+        <td class="result-cell fmt-decimal" x:fmla="=IF(C7>0,((C6-C7)/C7)*100,0)">-11.4</td>
         <td class="formula-col">= ((Sales CY - Sales LY) / Sales LY) x 100</td>
     </tr>
     <tr>
         <td class="result-label">ACHV (calc)</td>
-        <td class="result-cell" x:fmla="=IF(B13>0,ROUND((B6/B13)*100,1),0)">19.4</td>
-        <td class="result-cell" x:fmla="=IF(C13>0,ROUND((C6/C13)*100,1),0)">22.0</td>
+        <td class="result-cell fmt-decimal" x:fmla="=IF(B13>0,(B6/B13)*100,0)">19.4</td>
+        <td class="result-cell fmt-decimal" x:fmla="=IF(C13>0,(C6/C13)*100,0)">22.0</td>
         <td class="formula-col">= (Sales CY / Target) x 100</td>
     </tr>
     <tr>
         <td class="result-label">INVOICE</td>
-        <td class="result-cell" x:fmla="=B8">918</td>
-        <td class="result-cell" x:fmla="=C8">989</td>
+        <td class="result-cell fmt-whole" x:fmla="=B8">918</td>
+        <td class="result-cell fmt-whole" x:fmla="=C8">989</td>
         <td class="formula-col">Direct Copy</td>
     </tr>
     <tr>
         <td class="result-label">ATV (calc)</td>
-        <td class="result-cell" x:fmla="=IF(B8>0,ROUND(B6/B8,0),0)">223</td>
-        <td class="result-cell" x:fmla="=IF(C8>0,ROUND(C6/C8,0),0)">1623</td>
+        <td class="result-cell fmt-whole" x:fmla="=IF(B8>0,B6/B8,0)">223</td>
+        <td class="result-cell fmt-whole" x:fmla="=IF(C8>0,C6/C8,0)">1623</td>
         <td class="formula-col">= Sales CY / Invoice CY</td>
     </tr>
     <tr>
         <td class="result-label">UPT (calc)</td>
-        <td class="result-cell" x:fmla="=IF(B8>0,ROUND(B9/B8,1),0)">3.2</td>
-        <td class="result-cell" x:fmla="=IF(C8>0,ROUND(C9/C8,1),0)">3.6</td>
+        <td class="result-cell fmt-decimal" x:fmla="=IF(B8>0,B9/B8,0)">3.2</td>
+        <td class="result-cell fmt-decimal" x:fmla="=IF(C8>0,C9/C8,0)">3.6</td>
         <td class="formula-col">= Qty CY / Invoice CY</td>
     </tr>
     <tr>
         <td class="result-label">TRAFFIC</td>
-        <td class="result-cell" x:fmla="=B10">6374</td>
-        <td class="result-cell" x:fmla="=C10">7452</td>
+        <td class="result-cell fmt-whole" x:fmla="=B10">6374</td>
+        <td class="result-cell fmt-whole" x:fmla="=C10">7452</td>
         <td class="formula-col">Direct Copy</td>
     </tr>
     <tr>
         <td class="result-label">CONV (calc)</td>
-        <td class="result-cell" x:fmla="=IF(B10>0,ROUND((B8/B10)*100,1),0)">14.4</td>
-        <td class="result-cell" x:fmla="=IF(C10>0,ROUND((C8/C10)*100,1),0)">13.3</td>
+        <td class="result-cell fmt-decimal" x:fmla="=IF(B10>0,(B8/B10)*100,0)">14.4</td>
+        <td class="result-cell fmt-decimal" x:fmla="=IF(C10>0,(C8/C10)*100,0)">13.3</td>
         <td class="formula-col">= (Invoice CY / Footfall CY) x 100</td>
     </tr>
     <tr>
         <td class="result-label">SALES Average (calc)</td>
-        <td class="result-cell" x:fmla="=IF(B14>0,ROUND(B6/B14,0),0)">17030</td>
-        <td class="result-cell" x:fmla="=IF(C14>0,ROUND(C6/C14,0),0)">25075</td>
+        <td class="result-cell fmt-whole" x:fmla="=IF(B14>0,B6/B14,0)">17030</td>
+        <td class="result-cell fmt-whole" x:fmla="=IF(C14>0,C6/C14,0)">25075</td>
         <td class="formula-col">= Sales CY / Current Days</td>
     </tr>
     <tr>
         <td class="result-label">JIBBITZ (calc)</td>
-        <td class="result-cell" x:fmla="=IF(B6>0,ROUND((B11/B6)*100,1),0)">17.8</td>
-        <td class="result-cell" x:fmla="=IF(C6>0,ROUND((C11/C6)*100,1),0)">19.0</td>
+        <td class="result-cell fmt-decimal" x:fmla="=IF(B6>0,(B11/B6)*100,0)">17.8</td>
+        <td class="result-cell fmt-decimal" x:fmla="=IF(C6>0,(C11/C6)*100,0)">19.0</td>
         <td class="formula-col">= (Jibbitz Sales / Sales CY) x 100</td>
     </tr>
 </table>
