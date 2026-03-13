@@ -464,7 +464,48 @@ body::after {
 
 .calc-input-group input::placeholder { color: var(--text-muted); opacity: 0.4; font-weight: 400; }
 
-/* Calculator Results */
+/* Board Filler Toggle */
+.bf-period-toggle {
+    display: inline-flex;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-lg);
+    padding: 4px;
+    margin-bottom: 8px;
+}
+
+.bf-period-btn {
+    flex: 1;
+    min-width: 80px;
+    padding: 8px 16px;
+    background: transparent;
+    border: none;
+    border-radius: calc(var(--radius-lg) - 4px);
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: var(--transition-fast);
+}
+
+.bf-period-btn.active {
+    background: var(--crocs-green);
+    color: white;
+    box-shadow: 0 2px 10px rgba(26, 137, 23, 0.3);
+}
+
+.calc-badge {
+    background: rgba(245, 158, 11, 0.15);
+    color: var(--accent-amber);
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 0.65rem;
+    font-weight: 600;
+    letter-spacing: 0;
+    margin-left: 6px;
+}
+
+/* Calculator Results container (Legacy overrides if any) */
 .calc-results-grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr);

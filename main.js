@@ -359,59 +359,87 @@ document.addEventListener('DOMContentLoaded', () => {
     tabCalc.addEventListener('click', () => switchTab('calc'));
 
     // ═══════════════════════════════════════
-    // CALCULATOR TAB
+    // BOARD FILLER TAB (From Manager Reports)
     // ═══════════════════════════════════════
-    const calcInputIds = [
-        'calc-sales-ty', 'calc-sales-ly', 'calc-target',
-        'calc-invoices', 'calc-units', 'calc-traffic',
-        'calc-jibbitz', 'calc-days'
+    const bfInputIds = [
+        'bf-sales-cy', 'bf-sales-ly', 'bf-invoice-cy', 'bf-qty-cy', 
+        'bf-footfall-cy', 'bf-jibbitz-sales', 'bf-target', 'bf-days'
     ];
 
-    const calcResultsGrid = document.getElementById('calc-results-grid');
+    const bfBoard = document.getElementById('bf-board');
+    const bfMtdBtn = document.getElementById('bf-mtd-btn');
+    const bfYtdBtn = document.getElementById('bf-ytd-btn');
+    let bfPeriod = 'MTD';
 
-    function calcUpdate() {
-        const salesTY  = parseFloat(document.getElementById('calc-sales-ty').value) || 0;
-        const salesLY  = parseFloat(document.getElementById('calc-sales-ly').value) || 0;
-        const target   = parseFloat(document.getElementById('calc-target').value) || 0;
-        const invoices = parseInt(document.getElementById('calc-invoices').value) || 0;
-        const units    = parseInt(document.getElementById('calc-units').value) || 0;
-        const traffic  = parseInt(document.getElementById('calc-traffic').value) || 0;
-        const jibbitz  = parseFloat(document.getElementById('calc-jibbitz').value) || 0;
-        const days     = parseInt(document.getElementById('calc-days').value) || 0;
+    bfMtdBtn.addEventListener('click', () => { bfPeriod = 'MTD'; bfMtdBtn.classList.add('active'); bfYtdBtn.classList.remove('active'); bfUpdate(); });
+    bfYtdBtn.addEventListener('click', () => { bfPeriod = 'YTD'; bfYtdBtn.classList.add('active'); bfMtdBtn.classList.remove('active'); bfUpdate(); });
 
-        const growth     = salesLY > 0 ? ((salesTY - salesLY) / salesLY) * 100 : 0;
-        const achv       = target > 0 ? (salesTY / target) * 100 : 0;
-        const atv        = invoices > 0 ? salesTY / invoices : 0;
-        const upt        = invoices > 0 ? units / invoices : 0;
-        const conv       = traffic > 0 ? (invoices / traffic) * 100 : 0;
-        const salesAvg   = days > 0 ? salesTY / days : 0;
-        const jibbitzPct = salesTY > 0 ? (jibbitz / salesTY) * 100 : 0;
+    function bfUpdate() {
+        const salesCY   = parseFloat(document.getElementById('bf-sales-cy').value) || 0;
+        const salesLY   = parseFloat(document.getElementById('bf-sales-ly').value) || 0;
+        const target    = parseFloat(document.getElementById('bf-target').value) || 0;
+        const invoiceCY = parseInt(document.getElementById('bf-invoice-cy').value) || 0;
+        const qtyCY     = parseInt(document.getElementById('bf-qty-cy').value) || 0;
+        const footfallCY= parseInt(document.getElementById('bf-footfall-cy').value) || 0;
+        const jibbitz   = parseFloat(document.getElementById('bf-jibbitz-sales').value) || 0;
+        const days      = parseInt(document.getElementById('bf-days').value) || 0;
 
-        const results = [
-            { label: '📈 % Growth',       value: growth.toFixed(1) + '%',       cls: growth >= 0 ? 'positive' : 'negative' },
-            { label: '🏆 ACHV',           value: achv.toFixed(1) + '%',         cls: achv >= 100 ? 'positive' : 'negative' },
-            { label: '💳 ATV',            value: 'AED ' + Math.round(atv).toLocaleString(), cls: '' },
-            { label: '👟 UPT',            value: upt.toFixed(1),                cls: '' },
-            { label: '🔄 Conv',           value: conv.toFixed(1) + '%',         cls: '' },
-            { label: '📉 Sales Average',  value: 'AED ' + Math.round(salesAvg).toLocaleString(), cls: '' },
-            { label: '⭐ Jibbitz %',      value: jibbitzPct.toFixed(1) + '%',   cls: '' },
+        const growth     = salesLY > 0 ? ((salesCY - salesLY) / salesLY) * 100 : 0;
+        const achv       = target > 0 ? (salesCY / target) * 100 : 0;
+        const atv        = invoiceCY > 0 ? salesCY / invoiceCY : 0;
+        const upt        = invoiceCY > 0 ? qtyCY / invoiceCY : 0;
+        const conv       = footfallCY > 0 ? (invoiceCY / footfallCY) * 100 : 0;
+        const salesAvg   = days > 0 ? salesCY / days : 0;
+        const jibbitzPct = salesCY > 0 ? (jibbitz / salesCY) * 100 : 0;
+
+        const rows = [
+            { label: 'TARGET',          val: fmtNum(target),                   calc: false },
+            { label: 'TY SALES',        val: fmtNum(salesCY),                  calc: false },
+            { label: 'LY SALES',        val: fmtNum(salesLY),                  calc: false },
+            { label: '% GROWTH',        val: growth.toFixed(1) + '%',          calc: true, cls: growth >= 0 ? 'fill-positive' : 'fill-negative' },
+            { label: 'ACHV',            val: achv.toFixed(1) + '%',            calc: true, cls: achv >= 100 ? 'fill-positive' : 'fill-negative' },
+            { label: 'INVOICE',         val: fmtNum(invoiceCY),                calc: false },
+            { label: 'ATV',             val: Math.round(atv).toLocaleString(), calc: true },
+            { label: 'UPT',             val: upt.toFixed(1),                   calc: true },
+            { label: 'TRAFFIC',         val: fmtNum(footfallCY),               calc: false },
+            { label: 'CONV',            val: conv.toFixed(1) + '%',            calc: true },
+            { label: 'SALES Average',   val: Math.round(salesAvg).toLocaleString(), calc: true },
+            { label: 'JIBBITZ',         val: jibbitzPct.toFixed(1) + '%',      calc: true },
         ];
 
-        calcResultsGrid.innerHTML = results.map(r => `
-            <div class="calc-result-card ${r.cls}">
-                <span class="calc-result-label">${r.label}</span>
-                <span class="calc-result-value">${r.value}</span>
-            </div>
-        `).join('');
+        let html = `
+            <table class="fill-table board-filler-table">
+                <thead>
+                    <tr>
+                        <th class="fill-th-kpi">KPI</th>
+                        <th class="fill-th-val" style="width: 140px;">${bfPeriod}</th>
+                    </tr>
+                </thead>
+                <tbody>
+        `;
+
+        rows.forEach((row, i) => {
+            const stripe = i % 2 === 0 ? 'fill-row-even' : 'fill-row-odd';
+            const vCls = row.cls || '';
+            const badge = row.calc ? ' <span class="calc-badge">⚡ Auto</span>' : '';
+            html += `
+                <tr class="${stripe}">
+                    <td class="fill-kpi-name" style="padding: 14px 16px;">${row.label}${badge}</td>
+                    <td class="fill-kpi-value ${vCls}" style="font-size:1.4rem;">${row.val}</td>
+                </tr>
+            `;
+        });
+        html += `</tbody></table>`;
+        bfBoard.innerHTML = html;
     }
 
     // Attach live calculation to all inputs
-    calcInputIds.forEach(id => {
-        document.getElementById(id).addEventListener('input', calcUpdate);
+    bfInputIds.forEach(id => {
+        document.getElementById(id).addEventListener('input', bfUpdate);
     });
 
     // Initial render
-    calcUpdate();
+    bfUpdate();
 
     // ═══════════════════════════════════════
     // CHART

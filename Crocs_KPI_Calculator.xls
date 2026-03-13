@@ -1,0 +1,169 @@
+<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40">
+<head>
+<meta charset="UTF-8">
+<!--[if gte mso 9]><xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet><x:Name>Board Filler</x:Name><x:WorksheetOptions><x:DisplayGridlines/></x:WorksheetOptions></x:ExcelWorksheet></x:ExcelWorksheets></x:ExcelWorkbook></xml><![endif]-->
+<style>
+    table { border-collapse: collapse; font-family: Calibri, Arial, sans-serif; font-size: 12pt; }
+    td, th { border: 1px solid #999; padding: 10px 14px; }
+    th { background: #1A8917; color: white; font-weight: bold; text-align: center; font-size: 13pt; }
+    .header { background: #2D5F2D; color: white; font-weight: bold; font-size: 11pt; }
+    .input-label { background: #E8F5E9; font-weight: 600; }
+    .input-cell { background: #FFFDE7; font-weight: bold; text-align: right; }
+    .result-label { background: #E3F2FD; font-weight: 600; }
+    .result-cell { background: #FFF3E0; font-weight: bold; text-align: right; font-size: 14pt; }
+    .formula-col { background: #F3E5F5; font-size: 10pt; color: #555; }
+    .title { font-size: 16pt; font-weight: bold; color: #1A8917; border: none; }
+    .subtitle { font-size: 10pt; color: #666; border: none; }
+</style>
+</head>
+<body>
+<table>
+    <tr>
+        <td class="title" colspan="4">🐊 CROCS MOE 64436 — Board Filler</td>
+    </tr>
+    <tr>
+        <td class="subtitle" colspan="4">Enter Manager's Report numbers in yellow → Physical Board values appear in orange</td>
+    </tr>
+    <tr><td colspan="4" style="border:none;">&nbsp;</td></tr>
+    <tr>
+        <th>INPUT (Manager's Reports)</th>
+        <th>MTD</th>
+        <th>YTD</th>
+        <th>Report Source</th>
+    </tr>
+    <tr>
+        <td class="header" colspan="4">📊 From "Month LFL" Report</td>
+    </tr>
+    <tr>
+        <td class="input-label">Sales CY</td>
+        <td class="input-cell" x:num="">204355</td>
+        <td class="input-cell" x:num="">1604830</td>
+        <td class="formula-col">Month LFL</td>
+    </tr>
+    <tr>
+        <td class="input-label">Sales LY</td>
+        <td class="input-cell" x:num="">278473</td>
+        <td class="input-cell" x:num="">1810330</td>
+        <td class="formula-col">Month LFL</td>
+    </tr>
+    <tr>
+        <td class="input-label">Invoice CY</td>
+        <td class="input-cell" x:num="">918</td>
+        <td class="input-cell" x:num="">989</td>
+        <td class="formula-col">Month LFL</td>
+    </tr>
+    <tr>
+        <td class="input-label">Qty CY</td>
+        <td class="input-cell" x:num="">2900</td>
+        <td class="input-cell" x:num="">3558</td>
+        <td class="formula-col">Month LFL</td>
+    </tr>
+    <tr>
+        <td class="input-label">Footfall CY</td>
+        <td class="input-cell" x:num="">6374</td>
+        <td class="input-cell" x:num="">7452</td>
+        <td class="formula-col">Month LFL</td>
+    </tr>
+    <tr>
+        <td class="input-label">Jibbitz Sales Value CY</td>
+        <td class="input-cell" x:num="">36464</td>
+        <td class="input-cell" x:num="">304917</td>
+        <td class="formula-col">Month LFL</td>
+    </tr>
+    <tr>
+        <td class="header" colspan="4">🎯 From "Tgt Vs Achievement" Report</td>
+    </tr>
+    <tr>
+        <td class="input-label">Month/Year Target</td>
+        <td class="input-cell" x:num="">1053831</td>
+        <td class="input-cell" x:num="">7277796</td>
+        <td class="formula-col">Tgt Vs Achievement</td>
+    </tr>
+    <tr>
+        <td class="input-label">Current Days</td>
+        <td class="input-cell" x:num="">12</td>
+        <td class="input-cell" x:num="">64</td>
+        <td class="formula-col">Tgt Vs Achievement</td>
+    </tr>
+    <tr><td colspan="4" style="border:none;">&nbsp;</td></tr>
+    <tr>
+        <th>OUTPUT (Physical Board)</th>
+        <th>MTD</th>
+        <th>YTD</th>
+        <th>Formula</th>
+    </tr>
+    <tr>
+        <td class="result-label">TARGET</td>
+        <td class="result-cell" x:fmla="=B13">1053831</td>
+        <td class="result-cell" x:fmla="=C13">7277796</td>
+        <td class="formula-col">Direct Copy</td>
+    </tr>
+    <tr>
+        <td class="result-label">TY SALES</td>
+        <td class="result-cell" x:fmla="=B6">204355</td>
+        <td class="result-cell" x:fmla="=C6">1604830</td>
+        <td class="formula-col">Direct Copy</td>
+    </tr>
+    <tr>
+        <td class="result-label">LY SALES</td>
+        <td class="result-cell" x:fmla="=B7">278473</td>
+        <td class="result-cell" x:fmla="=C7">1810330</td>
+        <td class="formula-col">Direct Copy</td>
+    </tr>
+    <tr>
+        <td class="result-label">% GROWTH (calc)</td>
+        <td class="result-cell" x:fmla="=IF(B7>0,ROUND(((B6-B7)/B7)*100,1),0)">-26.6</td>
+        <td class="result-cell" x:fmla="=IF(C7>0,ROUND(((C6-C7)/C7)*100,1),0)">-11.4</td>
+        <td class="formula-col">= ((Sales CY - Sales LY) / Sales LY) x 100</td>
+    </tr>
+    <tr>
+        <td class="result-label">ACHV (calc)</td>
+        <td class="result-cell" x:fmla="=IF(B13>0,ROUND((B6/B13)*100,1),0)">19.4</td>
+        <td class="result-cell" x:fmla="=IF(C13>0,ROUND((C6/C13)*100,1),0)">22.0</td>
+        <td class="formula-col">= (Sales CY / Target) x 100</td>
+    </tr>
+    <tr>
+        <td class="result-label">INVOICE</td>
+        <td class="result-cell" x:fmla="=B8">918</td>
+        <td class="result-cell" x:fmla="=C8">989</td>
+        <td class="formula-col">Direct Copy</td>
+    </tr>
+    <tr>
+        <td class="result-label">ATV (calc)</td>
+        <td class="result-cell" x:fmla="=IF(B8>0,ROUND(B6/B8,0),0)">223</td>
+        <td class="result-cell" x:fmla="=IF(C8>0,ROUND(C6/C8,0),0)">1623</td>
+        <td class="formula-col">= Sales CY / Invoice CY</td>
+    </tr>
+    <tr>
+        <td class="result-label">UPT (calc)</td>
+        <td class="result-cell" x:fmla="=IF(B8>0,ROUND(B9/B8,1),0)">3.2</td>
+        <td class="result-cell" x:fmla="=IF(C8>0,ROUND(C9/C8,1),0)">3.6</td>
+        <td class="formula-col">= Qty CY / Invoice CY</td>
+    </tr>
+    <tr>
+        <td class="result-label">TRAFFIC</td>
+        <td class="result-cell" x:fmla="=B10">6374</td>
+        <td class="result-cell" x:fmla="=C10">7452</td>
+        <td class="formula-col">Direct Copy</td>
+    </tr>
+    <tr>
+        <td class="result-label">CONV (calc)</td>
+        <td class="result-cell" x:fmla="=IF(B10>0,ROUND((B8/B10)*100,1),0)">14.4</td>
+        <td class="result-cell" x:fmla="=IF(C10>0,ROUND((C8/C10)*100,1),0)">13.3</td>
+        <td class="formula-col">= (Invoice CY / Footfall CY) x 100</td>
+    </tr>
+    <tr>
+        <td class="result-label">SALES Average (calc)</td>
+        <td class="result-cell" x:fmla="=IF(B14>0,ROUND(B6/B14,0),0)">17030</td>
+        <td class="result-cell" x:fmla="=IF(C14>0,ROUND(C6/C14,0),0)">25075</td>
+        <td class="formula-col">= Sales CY / Current Days</td>
+    </tr>
+    <tr>
+        <td class="result-label">JIBBITZ (calc)</td>
+        <td class="result-cell" x:fmla="=IF(B6>0,ROUND((B11/B6)*100,1),0)">17.8</td>
+        <td class="result-cell" x:fmla="=IF(C6>0,ROUND((C11/C6)*100,1),0)">19.0</td>
+        <td class="formula-col">= (Jibbitz Sales / Sales CY) x 100</td>
+    </tr>
+</table>
+</body>
+</html>
