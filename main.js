@@ -1,6 +1,7 @@
 /* ========================================
    CROCS STORE KPI BOARD — LOGIC
    Firebase Realtime Database + Auto MTD/YTD
+   Matches Physical Board (12 rows)
    ======================================== */
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -58,22 +59,21 @@ document.addEventListener('DOMContentLoaded', () => {
     const targetsRef = db.ref('targets');
 
     // ═══════════════════════════════════════
-    // KPI DEFINITIONS
+    // KPI DEFINITIONS — Matches Physical Board (12 rows)
     // ═══════════════════════════════════════
     const KPI_CONFIG = [
         { key: 'target',       label: 'Target',          icon: '🎯', format: 'currency', subType: 'none' },
-        { key: 'tySales',      label: 'This Year Sales', icon: '💰', format: 'currency', subType: 'vsLY' },
-        { key: 'lySales',      label: 'Last Year Sales', icon: '📊', format: 'currency', subType: 'none' },
+        { key: 'tySales',      label: 'TY Sales',        icon: '💰', format: 'currency', subType: 'vsLY' },
+        { key: 'lySales',      label: 'LY Sales',        icon: '📊', format: 'currency', subType: 'none' },
         { key: 'growth',       label: '% Growth',        icon: '📈', format: 'percent',  subType: 'auto', highlight: true },
-        { key: 'achievement',  label: 'Achievement',     icon: '🏆', format: 'percent',  subType: 'auto', highlight: true },
+        { key: 'achievement',  label: 'ACHV',            icon: '🏆', format: 'percent',  subType: 'auto', highlight: true },
         { key: 'invoice',      label: 'Invoice',         icon: '🧾', format: 'number',   subType: 'vsLY_num' },
         { key: 'atv',          label: 'ATV',             icon: '💳', format: 'currency', subType: 'vsLY' },
         { key: 'upt',          label: 'UPT',             icon: '👟', format: 'decimal',  subType: 'vsLY_dec' },
         { key: 'traffic',      label: 'Traffic',         icon: '🚶', format: 'number',   subType: 'vsLY_num' },
-        { key: 'conversion',   label: 'Conversion',      icon: '🔄', format: 'percent',  subType: 'auto' },
-        { key: 'sales',        label: 'Sales',           icon: '🛒', format: 'currency', subType: 'vsLY' },
-        { key: 'average',      label: 'Average',         icon: '📉', format: 'currency', subType: 'vsLY' },
-        { key: 'jibbitzSales', label: 'Jibbitz Sales',   icon: '⭐', format: 'currency', subType: 'vsLY' },
+        { key: 'conversion',   label: 'Conv',            icon: '🔄', format: 'percent',  subType: 'auto' },
+        { key: 'average',      label: 'Sales Average',   icon: '📉', format: 'currency', subType: 'vsLY' },
+        { key: 'jibbitzPct',   label: 'Jibbitz',         icon: '⭐', format: 'percent',  subType: 'vsLY_pct' },
     ];
 
     // ═══════════════════════════════════════
@@ -163,17 +163,21 @@ document.addEventListener('DOMContentLoaded', () => {
         const conversionLY = sumTrafficLY > 0 ? (sumInvoicesLY / sumTrafficLY) * 100 : 0;
         const average     = dayCount > 0 ? sumSalesTY / dayCount : 0;
         const averageLY   = dayCount > 0 ? sumSalesLY / dayCount : 0;
+        const jibbitzPct  = sumSalesTY > 0 ? (sumJibbitzTY / sumSalesTY) * 100 : 0;
+        const jibbitzPctLY = sumSalesLY > 0 ? (sumJibbitzLY / sumSalesLY) * 100 : 0;
 
         return {
             dayCount, target,
             tySales: sumSalesTY, lySales: sumSalesLY,
+            tySalesLY: sumSalesLY,
             growth, achievement,
             invoice: sumInvoicesTY, invoiceLY: sumInvoicesLY,
             atv, atvLY, upt, uptLY,
             traffic: sumTrafficTY, trafficLY: sumTrafficLY,
             conversion, conversionLY,
-            sales: sumSalesTY, salesLY: sumSalesLY,
             average, averageLY,
+            jibbitzPct, jibbitzPctLY,
+            // Raw jibbitz amounts for chart
             jibbitzSales: sumJibbitzTY, jibbitzSalesLY: sumJibbitzLY,
         };
     }
@@ -205,7 +209,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // ═══════════════════════════════════════
-    // RENDER KPI CARDS
+    // RENDER KPI CARDS (12 rows matching physical board)
     // ═══════════════════════════════════════
     const kpiGrid = document.getElementById('kpi-grid');
 
@@ -260,6 +264,16 @@ document.addEventListener('DOMContentLoaded', () => {
                     <span class="kpi-badge ${cls}">${arrow} ${Math.abs(diff).toFixed(1)}%</span>
                     <span class="kpi-sub">vs LY: ${fmt(ly, 'decimal')}</span>
                 `;
+            } else if (kpi.subType === 'vsLY_pct' && d[kpi.key + 'LY'] != null) {
+                // Jibbitz percentage — show LY percentage
+                const ly = d[kpi.key + 'LY'];
+                const diff = val - ly;
+                const cls = diff >= 0 ? 'positive' : 'negative';
+                const arrow = diff >= 0 ? '▲' : '▼';
+                metaHTML = `
+                    <span class="kpi-badge ${cls}">${arrow} ${Math.abs(diff).toFixed(1)}pp</span>
+                    <span class="kpi-sub">vs LY: ${ly.toFixed(1)}%</span>
+                `;
             } else if (kpi.subType === 'auto') {
                 if (kpi.key === 'growth') {
                     const cls = val >= 0 ? 'positive' : 'negative';
@@ -296,23 +310,108 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // ═══════════════════════════════════════
-    // TAB SWITCHING
+    // TAB SWITCHING (3 tabs: MTD, YTD, Calculator)
     // ═══════════════════════════════════════
     const tabMTD = document.getElementById('tab-mtd');
     const tabYTD = document.getElementById('tab-ytd');
+    const tabCalc = document.getElementById('tab-calc');
     const tabIndicator = document.getElementById('tab-indicator');
+
+    // Sections to show/hide
+    const kpiSection = document.getElementById('kpi-section');
+    const calcSection = document.getElementById('calc-section');
+    const chartSection = document.getElementById('chart-section');
+    const logSection = document.getElementById('log-section');
 
     function switchTab(tab) {
         activeTab = tab;
         tabMTD.classList.toggle('active', tab === 'mtd');
         tabYTD.classList.toggle('active', tab === 'ytd');
-        tabIndicator.classList.toggle('ytd', tab === 'ytd');
-        renderCards(tab);
-        updateChart(tab);
+        tabCalc.classList.toggle('active', tab === 'calc');
+
+        // Move indicator
+        if (tab === 'mtd') {
+            tabIndicator.style.transform = 'translateX(0)';
+        } else if (tab === 'ytd') {
+            tabIndicator.style.transform = 'translateX(100%)';
+        } else {
+            tabIndicator.style.transform = 'translateX(200%)';
+        }
+
+        // Show/hide sections
+        if (tab === 'calc') {
+            kpiSection.style.display = 'none';
+            chartSection.style.display = 'none';
+            logSection.style.display = 'none';
+            calcSection.style.display = '';
+        } else {
+            kpiSection.style.display = '';
+            chartSection.style.display = '';
+            logSection.style.display = '';
+            calcSection.style.display = 'none';
+            renderCards(tab);
+            updateChart(tab);
+        }
     }
 
     tabMTD.addEventListener('click', () => switchTab('mtd'));
     tabYTD.addEventListener('click', () => switchTab('ytd'));
+    tabCalc.addEventListener('click', () => switchTab('calc'));
+
+    // ═══════════════════════════════════════
+    // CALCULATOR TAB
+    // ═══════════════════════════════════════
+    const calcInputIds = [
+        'calc-sales-ty', 'calc-sales-ly', 'calc-target',
+        'calc-invoices', 'calc-units', 'calc-traffic',
+        'calc-jibbitz', 'calc-days'
+    ];
+
+    const calcResultsGrid = document.getElementById('calc-results-grid');
+
+    function calcUpdate() {
+        const salesTY  = parseFloat(document.getElementById('calc-sales-ty').value) || 0;
+        const salesLY  = parseFloat(document.getElementById('calc-sales-ly').value) || 0;
+        const target   = parseFloat(document.getElementById('calc-target').value) || 0;
+        const invoices = parseInt(document.getElementById('calc-invoices').value) || 0;
+        const units    = parseInt(document.getElementById('calc-units').value) || 0;
+        const traffic  = parseInt(document.getElementById('calc-traffic').value) || 0;
+        const jibbitz  = parseFloat(document.getElementById('calc-jibbitz').value) || 0;
+        const days     = parseInt(document.getElementById('calc-days').value) || 0;
+
+        const growth     = salesLY > 0 ? ((salesTY - salesLY) / salesLY) * 100 : 0;
+        const achv       = target > 0 ? (salesTY / target) * 100 : 0;
+        const atv        = invoices > 0 ? salesTY / invoices : 0;
+        const upt        = invoices > 0 ? units / invoices : 0;
+        const conv       = traffic > 0 ? (invoices / traffic) * 100 : 0;
+        const salesAvg   = days > 0 ? salesTY / days : 0;
+        const jibbitzPct = salesTY > 0 ? (jibbitz / salesTY) * 100 : 0;
+
+        const results = [
+            { label: '📈 % Growth',       value: growth.toFixed(1) + '%',       cls: growth >= 0 ? 'positive' : 'negative' },
+            { label: '🏆 ACHV',           value: achv.toFixed(1) + '%',         cls: achv >= 100 ? 'positive' : 'negative' },
+            { label: '💳 ATV',            value: 'AED ' + Math.round(atv).toLocaleString(), cls: '' },
+            { label: '👟 UPT',            value: upt.toFixed(1),                cls: '' },
+            { label: '🔄 Conv',           value: conv.toFixed(1) + '%',         cls: '' },
+            { label: '📉 Sales Average',  value: 'AED ' + Math.round(salesAvg).toLocaleString(), cls: '' },
+            { label: '⭐ Jibbitz %',      value: jibbitzPct.toFixed(1) + '%',   cls: '' },
+        ];
+
+        calcResultsGrid.innerHTML = results.map(r => `
+            <div class="calc-result-card ${r.cls}">
+                <span class="calc-result-label">${r.label}</span>
+                <span class="calc-result-value">${r.value}</span>
+            </div>
+        `).join('');
+    }
+
+    // Attach live calculation to all inputs
+    calcInputIds.forEach(id => {
+        document.getElementById(id).addEventListener('input', calcUpdate);
+    });
+
+    // Initial render
+    calcUpdate();
 
     // ═══════════════════════════════════════
     // CHART
@@ -329,7 +428,7 @@ document.addEventListener('DOMContentLoaded', () => {
             d.atv * 100 / 1000, d.invoice / 10,
         ];
         const lyData = [
-            d.salesLY / 1000, null, d.jibbitzSalesLY / 1000,
+            d.lySales / 1000, null, d.jibbitzSalesLY / 1000,
             d.atvLY * 100 / 1000, d.invoiceLY / 10,
         ];
 
@@ -570,8 +669,10 @@ document.addEventListener('DOMContentLoaded', () => {
     // REFRESH ALL VIEWS
     // ═══════════════════════════════════════
     function refreshAll() {
-        renderCards(activeTab);
-        updateChart(activeTab);
+        if (activeTab !== 'calc') {
+            renderCards(activeTab);
+            updateChart(activeTab);
+        }
         renderLog();
     }
 
@@ -592,7 +693,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // ═══════════════════════════════════════
-    // MORNING FILL SHEET
+    // MORNING FILL SHEET (updated for 12-row board)
     // ═══════════════════════════════════════
     const btnFillSheet = document.getElementById('btn-fill-sheet');
     const fillSheetModal = document.getElementById('fill-sheet-modal');
@@ -609,21 +710,20 @@ document.addEventListener('DOMContentLoaded', () => {
         const mtd = aggregate('mtd');
         const ytd = aggregate('ytd');
 
-        // Build the fill sheet rows
+        // Build the fill sheet rows — matches physical board exactly
         const rows = [
-            { label: '🎯 Target',          mtd: fmt(mtd.target, 'currency'),          ytd: fmt(ytd.target, 'currency') },
-            { label: '💰 This Year Sales',  mtd: fmt(mtd.tySales, 'currency'),         ytd: fmt(ytd.tySales, 'currency') },
-            { label: '📊 Last Year Sales',  mtd: fmt(mtd.lySales, 'currency'),         ytd: fmt(ytd.lySales, 'currency') },
-            { label: '📈 % Growth',         mtd: fmt(mtd.growth, 'percent'),           ytd: fmt(ytd.growth, 'percent'),   highlightMtd: mtd.growth, highlightYtd: ytd.growth },
-            { label: '🏆 Achievement',      mtd: fmt(mtd.achievement, 'percent'),      ytd: fmt(ytd.achievement, 'percent'), highlightMtd: mtd.achievement >= 100 ? 1 : -1, highlightYtd: ytd.achievement >= 100 ? 1 : -1 },
-            { label: '🧾 Invoices',         mtd: fmt(mtd.invoice, 'number'),           ytd: fmt(ytd.invoice, 'number') },
-            { label: '💳 ATV',              mtd: fmt(mtd.atv, 'currency'),             ytd: fmt(ytd.atv, 'currency') },
-            { label: '👟 UPT',              mtd: fmt(mtd.upt, 'decimal'),              ytd: fmt(ytd.upt, 'decimal') },
-            { label: '🚶 Traffic',          mtd: fmt(mtd.traffic, 'number'),           ytd: fmt(ytd.traffic, 'number') },
-            { label: '🔄 Conversion',       mtd: fmt(mtd.conversion, 'percent'),       ytd: fmt(ytd.conversion, 'percent') },
-            { label: '🛒 Sales',            mtd: fmt(mtd.sales, 'currency'),           ytd: fmt(ytd.sales, 'currency') },
-            { label: '📉 Average',          mtd: fmt(mtd.average, 'currency'),         ytd: fmt(ytd.average, 'currency') },
-            { label: '⭐ Jibbitz Sales',    mtd: fmt(mtd.jibbitzSales, 'currency'),    ytd: fmt(ytd.jibbitzSales, 'currency') },
+            { label: '🎯 TARGET',          mtd: fmt(mtd.target, 'currency'),          ytd: fmt(ytd.target, 'currency') },
+            { label: '💰 TY SALES',        mtd: fmt(mtd.tySales, 'currency'),         ytd: fmt(ytd.tySales, 'currency') },
+            { label: '📊 LY SALES',        mtd: fmt(mtd.lySales, 'currency'),         ytd: fmt(ytd.lySales, 'currency') },
+            { label: '📈 % GROWTH',        mtd: fmt(mtd.growth, 'percent'),           ytd: fmt(ytd.growth, 'percent'),   highlightMtd: mtd.growth, highlightYtd: ytd.growth },
+            { label: '🏆 ACHV',            mtd: fmt(mtd.achievement, 'percent'),      ytd: fmt(ytd.achievement, 'percent'), highlightMtd: mtd.achievement >= 100 ? 1 : -1, highlightYtd: ytd.achievement >= 100 ? 1 : -1 },
+            { label: '🧾 INVOICE',         mtd: fmt(mtd.invoice, 'number'),           ytd: fmt(ytd.invoice, 'number') },
+            { label: '💳 ATV',             mtd: fmt(mtd.atv, 'currency'),             ytd: fmt(ytd.atv, 'currency') },
+            { label: '👟 UPT',             mtd: fmt(mtd.upt, 'decimal'),              ytd: fmt(ytd.upt, 'decimal') },
+            { label: '🚶 TRAFFIC',         mtd: fmt(mtd.traffic, 'number'),           ytd: fmt(ytd.traffic, 'number') },
+            { label: '🔄 CONV',            mtd: fmt(mtd.conversion, 'percent'),       ytd: fmt(ytd.conversion, 'percent') },
+            { label: '📉 SALES Average',   mtd: fmt(mtd.average, 'currency'),         ytd: fmt(ytd.average, 'currency') },
+            { label: '⭐ JIBBITZ',         mtd: fmt(mtd.jibbitzPct, 'percent'),       ytd: fmt(ytd.jibbitzPct, 'percent') },
         ];
 
         let html = `
@@ -652,28 +752,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         html += `</tbody></table>`;
-
-        // Add today's raw entry if it exists
-        const todayEntry = dailyData[todayStr()];
-        if (todayEntry) {
-            html += `
-                <div class="fill-today-section">
-                    <h3>📅 Today's Entry (${fmtDateShort(todayStr())})</h3>
-                    <div class="fill-today-grid">
-                        <div class="fill-today-item"><span>Sales TY</span><strong>${fmtNum(todayEntry.salesTY)}</strong></div>
-                        <div class="fill-today-item"><span>Sales LY</span><strong>${fmtNum(todayEntry.salesLY)}</strong></div>
-                        <div class="fill-today-item"><span>Invoices TY</span><strong>${fmtNum(todayEntry.invoicesTY)}</strong></div>
-                        <div class="fill-today-item"><span>Invoices LY</span><strong>${fmtNum(todayEntry.invoicesLY)}</strong></div>
-                        <div class="fill-today-item"><span>Units TY</span><strong>${fmtNum(todayEntry.unitsTY)}</strong></div>
-                        <div class="fill-today-item"><span>Units LY</span><strong>${fmtNum(todayEntry.unitsLY)}</strong></div>
-                        <div class="fill-today-item"><span>Traffic TY</span><strong>${fmtNum(todayEntry.trafficTY)}</strong></div>
-                        <div class="fill-today-item"><span>Traffic LY</span><strong>${fmtNum(todayEntry.trafficLY)}</strong></div>
-                        <div class="fill-today-item"><span>Jibbitz TY</span><strong>${fmtNum(todayEntry.jibbitzTY)}</strong></div>
-                        <div class="fill-today-item"><span>Jibbitz LY</span><strong>${fmtNum(todayEntry.jibbitzLY)}</strong></div>
-                    </div>
-                </div>
-            `;
-        }
 
         // Summary info
         html += `
