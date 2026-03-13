@@ -37,6 +37,9 @@
             </div>
             <div class="header-right">
                 <div class="date-badge" id="current-date"></div>
+                <button class="header-btn fill-sheet-btn" id="btn-fill-sheet" title="Morning Fill Sheet">
+                    📋 Fill Sheet
+                </button>
                 <button class="header-btn" id="btn-targets" title="Set Targets">
                     ⚙️ Targets
                 </button>
@@ -215,6 +218,25 @@
                 </div>
                 <button type="submit" class="btn-save">💾 Save Targets</button>
             </form>
+        </div>
+    </div>
+
+    <!-- Fill Sheet Modal -->
+    <div class="modal fill-sheet-modal" id="fill-sheet-modal">
+        <div class="fill-sheet-content">
+            <div class="fill-sheet-header">
+                <div>
+                    <h2>📋 Morning Fill Sheet</h2>
+                    <p class="fill-sheet-date" id="fill-sheet-date"></p>
+                </div>
+                <div class="fill-sheet-actions">
+                    <button class="fill-sheet-print-btn" id="fill-sheet-print" title="Print">🖨️ Print</button>
+                    <button class="panel-close" id="fill-sheet-close">✕</button>
+                </div>
+            </div>
+            <div class="fill-sheet-body" id="fill-sheet-body">
+                <!-- Rendered by JS -->
+            </div>
         </div>
     </div>
     </div>

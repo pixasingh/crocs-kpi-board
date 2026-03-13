@@ -592,6 +592,119 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // ═══════════════════════════════════════
+    // MORNING FILL SHEET
+    // ═══════════════════════════════════════
+    const btnFillSheet = document.getElementById('btn-fill-sheet');
+    const fillSheetModal = document.getElementById('fill-sheet-modal');
+    const fillSheetClose = document.getElementById('fill-sheet-close');
+    const fillSheetPrint = document.getElementById('fill-sheet-print');
+    const fillSheetBody = document.getElementById('fill-sheet-body');
+    const fillSheetDate = document.getElementById('fill-sheet-date');
+
+    function openFillSheet() {
+        const now = new Date();
+        const opts = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+        fillSheetDate.textContent = now.toLocaleDateString('en-US', opts);
+
+        const mtd = aggregate('mtd');
+        const ytd = aggregate('ytd');
+
+        // Build the fill sheet rows
+        const rows = [
+            { label: '🎯 Target',          mtd: fmt(mtd.target, 'currency'),          ytd: fmt(ytd.target, 'currency') },
+            { label: '💰 This Year Sales',  mtd: fmt(mtd.tySales, 'currency'),         ytd: fmt(ytd.tySales, 'currency') },
+            { label: '📊 Last Year Sales',  mtd: fmt(mtd.lySales, 'currency'),         ytd: fmt(ytd.lySales, 'currency') },
+            { label: '📈 % Growth',         mtd: fmt(mtd.growth, 'percent'),           ytd: fmt(ytd.growth, 'percent'),   highlightMtd: mtd.growth, highlightYtd: ytd.growth },
+            { label: '🏆 Achievement',      mtd: fmt(mtd.achievement, 'percent'),      ytd: fmt(ytd.achievement, 'percent'), highlightMtd: mtd.achievement >= 100 ? 1 : -1, highlightYtd: ytd.achievement >= 100 ? 1 : -1 },
+            { label: '🧾 Invoices',         mtd: fmt(mtd.invoice, 'number'),           ytd: fmt(ytd.invoice, 'number') },
+            { label: '💳 ATV',              mtd: fmt(mtd.atv, 'currency'),             ytd: fmt(ytd.atv, 'currency') },
+            { label: '👟 UPT',              mtd: fmt(mtd.upt, 'decimal'),              ytd: fmt(ytd.upt, 'decimal') },
+            { label: '🚶 Traffic',          mtd: fmt(mtd.traffic, 'number'),           ytd: fmt(ytd.traffic, 'number') },
+            { label: '🔄 Conversion',       mtd: fmt(mtd.conversion, 'percent'),       ytd: fmt(ytd.conversion, 'percent') },
+            { label: '🛒 Sales',            mtd: fmt(mtd.sales, 'currency'),           ytd: fmt(ytd.sales, 'currency') },
+            { label: '📉 Average',          mtd: fmt(mtd.average, 'currency'),         ytd: fmt(ytd.average, 'currency') },
+            { label: '⭐ Jibbitz Sales',    mtd: fmt(mtd.jibbitzSales, 'currency'),    ytd: fmt(ytd.jibbitzSales, 'currency') },
+        ];
+
+        let html = `
+            <table class="fill-table">
+                <thead>
+                    <tr>
+                        <th class="fill-th-kpi">KPI</th>
+                        <th class="fill-th-val">MTD</th>
+                        <th class="fill-th-val">YTD</th>
+                    </tr>
+                </thead>
+                <tbody>
+        `;
+
+        rows.forEach((row, i) => {
+            const mtdClass = row.highlightMtd != null ? (row.highlightMtd >= 0 ? 'fill-positive' : 'fill-negative') : '';
+            const ytdClass = row.highlightYtd != null ? (row.highlightYtd >= 0 ? 'fill-positive' : 'fill-negative') : '';
+            const stripe = i % 2 === 0 ? 'fill-row-even' : 'fill-row-odd';
+            html += `
+                <tr class="${stripe}">
+                    <td class="fill-kpi-name">${row.label}</td>
+                    <td class="fill-kpi-value ${mtdClass}">${row.mtd}</td>
+                    <td class="fill-kpi-value ${ytdClass}">${row.ytd}</td>
+                </tr>
+            `;
+        });
+
+        html += `</tbody></table>`;
+
+        // Add today's raw entry if it exists
+        const todayEntry = dailyData[todayStr()];
+        if (todayEntry) {
+            html += `
+                <div class="fill-today-section">
+                    <h3>📅 Today's Entry (${fmtDateShort(todayStr())})</h3>
+                    <div class="fill-today-grid">
+                        <div class="fill-today-item"><span>Sales TY</span><strong>${fmtNum(todayEntry.salesTY)}</strong></div>
+                        <div class="fill-today-item"><span>Sales LY</span><strong>${fmtNum(todayEntry.salesLY)}</strong></div>
+                        <div class="fill-today-item"><span>Invoices TY</span><strong>${fmtNum(todayEntry.invoicesTY)}</strong></div>
+                        <div class="fill-today-item"><span>Invoices LY</span><strong>${fmtNum(todayEntry.invoicesLY)}</strong></div>
+                        <div class="fill-today-item"><span>Units TY</span><strong>${fmtNum(todayEntry.unitsTY)}</strong></div>
+                        <div class="fill-today-item"><span>Units LY</span><strong>${fmtNum(todayEntry.unitsLY)}</strong></div>
+                        <div class="fill-today-item"><span>Traffic TY</span><strong>${fmtNum(todayEntry.trafficTY)}</strong></div>
+                        <div class="fill-today-item"><span>Traffic LY</span><strong>${fmtNum(todayEntry.trafficLY)}</strong></div>
+                        <div class="fill-today-item"><span>Jibbitz TY</span><strong>${fmtNum(todayEntry.jibbitzTY)}</strong></div>
+                        <div class="fill-today-item"><span>Jibbitz LY</span><strong>${fmtNum(todayEntry.jibbitzLY)}</strong></div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Summary info
+        html += `
+            <div class="fill-summary">
+                <span>📊 MTD Days: <strong>${mtd.dayCount}</strong></span>
+                <span>📊 YTD Days: <strong>${ytd.dayCount}</strong></span>
+            </div>
+        `;
+
+        fillSheetBody.innerHTML = html;
+
+        fillSheetModal.classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeFillSheet() {
+        fillSheetModal.classList.remove('active');
+        document.body.style.overflow = '';
+    }
+
+    btnFillSheet.addEventListener('click', openFillSheet);
+    fillSheetClose.addEventListener('click', closeFillSheet);
+    fillSheetModal.addEventListener('click', (e) => {
+        if (e.target === fillSheetModal) closeFillSheet();
+    });
+
+    fillSheetPrint.addEventListener('click', () => {
+        window.print();
+    });
+
+    // ═══════════════════════════════════════
     // INIT
     // ═══════════════════════════════════════
     setDate();
